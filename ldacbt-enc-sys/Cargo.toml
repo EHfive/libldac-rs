@@ -1,0 +1,17 @@
+[package]
+name = "ldacbt-enc-sys"
+version = "0.1.0"
+links = "ldacBT_enc"
+description = "Native bindings to libldac encoder"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories = ["api-bindings", "multimedia::encoding", "multimedia::audio"]
+
+[dependencies]
+
+[build-dependencies]
+pkg-config = "0.3.27"

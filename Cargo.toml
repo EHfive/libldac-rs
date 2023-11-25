@@ -1,0 +1,12 @@
+[workspace]
+members = ["libldac", "ldacbt-enc-sys"]
+resolver = "2"
+
+[workspace.package]
+readme = "README.md"
+edition = "2021"
+rust-version = "1.65"
+repository = "https://github.com/EHfive/libldac-rs"
+license = "MIT OR Apache-2.0"
+authors = ["Huang-Huang Bao <i@eh5.me>"]
+keywords = ["bluetooth", "a2dp"]
