@@ -29,6 +29,7 @@ impl Drop for Handle {
         }
     }
 }
+unsafe impl Send for Handle {}
 
 #[derive(Debug, Clone, Copy)]
 pub enum SamplingFreq {
