@@ -35,8 +35,7 @@ impl ErrorCode {
         'api: {
             return match self.api {
                 sys::LDACBT_ERR_FATAL => break 'api,
-                sys::LDACBT_ERR_ILL_MTU_SIZE => MtuSize,
-                sys::LDACBT_ERR_ILL_EQMID => MtuSize,
+                sys::LDACBT_ERR_ILL_EQMID => Eqmid,
                 sys::LDACBT_ERR_ASSERT_CHANNEL_MODE => ChannelMode,
                 sys::LDACBT_ERR_ILL_SMPL_FORMAT => SampleFormat,
                 sys::LDACBT_ERR_ILL_SAMPLING_FREQ => SamplingFreq,
@@ -62,8 +61,6 @@ pub enum EncoderError {
     UnhandledEqmid(i32),
     #[error("buffer size too small")]
     BufSize,
-    #[error("MTU size too small")]
-    MtuSize,
     #[error("illegal EQMID")]
     Eqmid,
     #[error("illegal channel mode")]

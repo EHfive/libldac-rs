@@ -10,8 +10,8 @@ const LDACBT_FAIL: i32 = -1;
 // these eqmid can only be set indirectly via ldacBT_alter_eqmid_priority()
 const LDACBT_EQMID_Q0: u32 = sys::LDACBT_EQMID_MQ + 1;
 const LDACBT_EQMID_Q1: u32 = sys::LDACBT_EQMID_MQ + 2;
+const LDACBT_MTU_REQUIRED: u16 = 679;
 
-pub const LDACBT_MTU_REQUIRED: u16 = 679;
 pub const LDACBT_ENC_NUM_SAMPLES: usize = 128;
 pub const LDACBT_PACKET_MAX_SIZE: usize = 660;
 
@@ -142,7 +142,6 @@ impl SampleFormat {
 
 #[derive(Debug)]
 pub struct EncoderOptions {
-    pub mtu: u16,
     pub channel_mode: ChannelMode,
     pub sample_format: SampleFormat,
     pub sampling_freq: SamplingFreq,
@@ -180,7 +179,8 @@ impl Encoder {
         let res = unsafe {
             sys::ldacBT_init_handle_encode(
                 handle.0.as_mut(),
-                options.mtu as _,
+                // MTU set here is for checking only and does not effect encoding result
+                LDACBT_MTU_REQUIRED as _,
                 sys::LDACBT_EQMID_HQ as _,
                 options.channel_mode.to_sys() as _,
                 options.sample_format.to_sys() as _,
@@ -331,7 +331,6 @@ mod tests {
     fn quality_mode() {
         use QualityMode::*;
         let mut encoder = Encoder::new(EncoderOptions {
-            mtu: 800,
             channel_mode: ChannelMode::Stereo,
             sample_format: SampleFormat::F32,
             sampling_freq: SamplingFreq::F48000,
@@ -359,7 +358,6 @@ mod tests {
             for &sample_format in sample_format_list.iter() {
                 for &sampling_freq in freq_list.iter() {
                     let mut encoder = Encoder::new(EncoderOptions {
-                        mtu: LDACBT_MTU_REQUIRED,
                         channel_mode,
                         sample_format,
                         sampling_freq,
@@ -375,28 +373,8 @@ mod tests {
     }
 
     #[test]
-    fn mtu() {
-        let _encoder = Encoder::new(EncoderOptions {
-            mtu: LDACBT_MTU_REQUIRED,
-            channel_mode: ChannelMode::Stereo,
-            sample_format: SampleFormat::F32,
-            sampling_freq: SamplingFreq::F48000,
-        })
-        .unwrap();
-
-        let encoder = Encoder::new(EncoderOptions {
-            mtu: LDACBT_MTU_REQUIRED - 1,
-            channel_mode: ChannelMode::Stereo,
-            sample_format: SampleFormat::F32,
-            sampling_freq: SamplingFreq::F48000,
-        });
-        assert!(matches!(encoder, Err(EncoderError::MtuSize)));
-    }
-
-    #[test]
     fn encode() {
         let mut encoder = Encoder::new(EncoderOptions {
-            mtu: LDACBT_MTU_REQUIRED,
             channel_mode: ChannelMode::Stereo,
             sample_format: SampleFormat::S16,
             sampling_freq: SamplingFreq::F48000,
